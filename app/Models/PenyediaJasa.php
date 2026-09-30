@@ -1,0 +1,75 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+class PenyediaJasa extends Model
+{
+    use HasFactory;
+
+    protected $table = 'penyedia_jasa';
+
+    const CREATED_AT = 'dibuat_pada';
+    const UPDATED_AT = 'diperbarui_pada';
+
+    protected $fillable = [
+        'pengguna_id',
+        'nama',
+        'telepon',
+        'alamat',
+        'deskripsi',
+        'status',
+        'rating',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'rating' => 'decimal:2',
+        ];
+    }
+
+    /**
+     * Relasi ke akun Pengguna (pemilik profil penyedia).
+     */
+    public function pengguna(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'pengguna_id');
+    }
+
+    /**
+     * Relasi ke daftar layanan jasa yang disediakan (1 ke N).
+     */
+    public function jasa(): HasMany
+    {
+        return $this->hasMany(Jasa::class, 'penyedia_id');
+    }
+
+    /**
+     * Relasi ke permintaan jasa yang ditujukan ke penyedia ini (1 ke N).
+     */
+    public function permintaanJasa(): HasMany
+    {
+        return $this->hasMany(PermintaanJasa::class, 'penyedia_id');
+    }
+
+    /**
+     * Relasi ke pesanan yang ditangani penyedia ini (1 ke N).
+     */
+    public function pesanan(): HasMany
+    {
+        return $this->hasMany(Pesanan::class, 'penyedia_id');
+    }
+
+    /**
+     * Relasi ke ulasan yang diterima penyedia ini (1 ke N).
+     */
+    public function ulasan(): HasMany
+    {
+        return $this->hasMany(Ulasan::class, 'penyedia_id');
+    }
+}
