@@ -13,6 +13,8 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             CampusSeeder::class,
+            ProductSeeder::class,
+            JasaKitaSeeder::class,
         ]);
     }
 }

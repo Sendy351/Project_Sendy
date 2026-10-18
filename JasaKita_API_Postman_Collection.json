@@ -1,0 +1,273 @@
+{
+  "info": {
+    "name": "Jasa_Kita - Sistem Informasi Permintaan & Penyediaan Jasa Multifungsi API",
+    "_postman_id": "c1f7b889-105a-4b92-8822-jasakita2026",
+    "description": "Postman Collection untuk Presentasi Progress UTS Mata Kuliah Project Database Backend (Laravel & Database Design).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000/api",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Autentikasi & Pengguna",
+      "item": [
+        {
+          "name": "Register Pengguna Baru",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"Siti Rahma\",\n  \"email\": \"siti@gmail.com\",\n  \"kata_sandi\": \"password123\",\n  \"telepon\": \"085678901234\",\n  \"alamat\": \"Jl. Dipati Ukur No. 20, Bandung\",\n  \"peran\": \"pengguna\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/auth/register", "host": ["{{base_url}}"], "path": ["auth", "register"] }
+          }
+        },
+        {
+          "name": "Login Pengguna",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"budi@gmail.com\",\n  \"kata_sandi\": \"password123\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/auth/login", "host": ["{{base_url}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Get Profil Pengguna",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/auth/profile/2", "host": ["{{base_url}}"], "path": ["auth", "profile", "2"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Kategori Jasa",
+      "item": [
+        {
+          "name": "Get Semua Kategori Jasa",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/kategori-jasa", "host": ["{{base_url}}"], "path": ["kategori-jasa"] }
+          }
+        },
+        {
+          "name": "Get Detail Kategori & Jasanya",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/kategori-jasa/1", "host": ["{{base_url}}"], "path": ["kategori-jasa", "1"] }
+          }
+        },
+        {
+          "name": "Tambah Kategori Jasa Baru",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"Perawatan Otomotif\",\n  \"deskripsi\": \"Jasa cuci mobil panggilan, servis ringan, dan ganti oli.\",\n  \"ikon\": \"car\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/kategori-jasa", "host": ["{{base_url}}"], "path": ["kategori-jasa"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Penyedia Jasa",
+      "item": [
+        {
+          "name": "Get Semua Penyedia Jasa",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/penyedia-jasa", "host": ["{{base_url}}"], "path": ["penyedia-jasa"] }
+          }
+        },
+        {
+          "name": "Get Detail Penyedia Jasa (Rating & Ulasan)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/penyedia-jasa/1", "host": ["{{base_url}}"], "path": ["penyedia-jasa", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Katalog & Detail Jasa",
+      "item": [
+        {
+          "name": "Get Katalog Semua Jasa",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/jasa", "host": ["{{base_url}}"], "path": ["jasa"] }
+          }
+        },
+        {
+          "name": "Get Detail Jasa Tertentu",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/jasa/1", "host": ["{{base_url}}"], "path": ["jasa", "1"] }
+          }
+        },
+        {
+          "name": "Tambah Layanan Jasa Baru",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"kategori_id\": 1,\n  \"penyedia_id\": 1,\n  \"nama\": \"Pengecekan Freon & Tambah Freon AC\",\n  \"deskripsi\": \"Pengecekan kebocoran pipa dan penambahan freon R32/R410A.\",\n  \"harga\": 120000,\n  \"durasi\": \"1 Jam\",\n  \"gambar\": \"freon.jpg\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/jasa", "host": ["{{base_url}}"], "path": ["jasa"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Permintaan Jasa (Booking)",
+      "item": [
+        {
+          "name": "Get Semua Permintaan Jasa",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/permintaan-jasa", "host": ["{{base_url}}"], "path": ["permintaan-jasa"] }
+          }
+        },
+        {
+          "name": "Ajukan Permintaan Jasa Baru",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pengguna_id\": 2,\n  \"jasa_id\": 2,\n  \"deskripsi\": \"Pembersihan karpet dan ruang tamu lantai 2.\",\n  \"lokasi\": \"Jl. Melati No. 12, Bandung\",\n  \"jadwal\": \"2026-10-20 09:00:00\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/permintaan-jasa", "host": ["{{base_url}}"], "path": ["permintaan-jasa"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Pesanan & Workflow",
+      "item": [
+        {
+          "name": "Get Daftar Pesanan",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/pesanan", "host": ["{{base_url}}"], "path": ["pesanan"] }
+          }
+        },
+        {
+          "name": "Get Detail Pesanan (Status, Pembayaran, Review)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/pesanan/1", "host": ["{{base_url}}"], "path": ["pesanan", "1"] }
+          }
+        },
+        {
+          "name": "Update Status Pesanan (Dimulai / Selesai)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"selesai\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/pesanan/1/status", "host": ["{{base_url}}"], "path": ["pesanan", "1", "status"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Pembayaran",
+      "item": [
+        {
+          "name": "Bayar Pesanan",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pesanan_id\": 1,\n  \"metode\": \"qris\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/pembayaran", "host": ["{{base_url}}"], "path": ["pembayaran"] }
+          }
+        },
+        {
+          "name": "Get Status Pembayaran",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/pembayaran/1", "host": ["{{base_url}}"], "path": ["pembayaran", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Ulasan & Rating",
+      "item": [
+        {
+          "name": "Kirim Ulasan & Rating Pesanan",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pesanan_id\": 1,\n  \"pengguna_id\": 2,\n  \"rating\": 5,\n  \"komentar\": \"Pelayanan memuaskan dan AC sangat dingin!\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/ulasan", "host": ["{{base_url}}"], "path": ["ulasan"] }
+          }
+        },
+        {
+          "name": "Get Semua Ulasan Penyedia",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/ulasan?penyedia_id=1", "host": ["{{base_url}}"], "path": ["ulasan"], "query": [{ "key": "penyedia_id", "value": "1" }] }
+          }
+        }
+      ]
+    }
+  ]
+}
