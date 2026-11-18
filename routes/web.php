@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\Web\AuthController as WebAuth;
+use App\Http\Controllers\Web\ChatController;
 use App\Http\Controllers\Web\JasaController;
 use App\Http\Controllers\Web\KategoriController;
 use App\Http\Controllers\Web\PesananController;
@@ -58,6 +59,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/pesanan/{id}/status', [PesananController::class, 'updateStatus'])->name('pesanan.update_status');
     Route::post('/pesanan/{id}/bayar', [PesananController::class, 'bayar'])->name('pesanan.bayar');
     Route::post('/pesanan/{id}/ulasan', [PesananController::class, 'kirimUlasan'])->name('pesanan.ulasan');
+
+    // Chat in-app pemesan <-> runner (teks + foto lokasi)
+    Route::get('/pesanan/{id}/chat', [ChatController::class, 'index'])->name('chat.index');
+    Route::post('/pesanan/{id}/chat', [ChatController::class, 'store'])->middleware('throttle:30,1')->name('chat.store');
+    Route::get('/chat/foto/{pesanId}', [ChatController::class, 'foto'])->name('chat.foto');
 });
 
 // Presentasi UTS & Demo API Explorer

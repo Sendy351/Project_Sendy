@@ -95,14 +95,55 @@
             grid-template-columns: repeat(2, 1fr);
             gap: 0.75rem;
         }
+        /* Kartu rute sebelumnya kepotong di kanan pada layar HP: ditumpuk vertikal */
+        .route-path-container {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 10px;
+            padding: 0.9rem 1rem;
+        }
+        .route-path-container .route-end {
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+            text-align: left !important;
+        }
+        .route-path-container .route-mid {
+            align-items: flex-start !important;
+            padding: 0 0 0 46px !important;
+        }
+        .route-path-container .route-mid > div:last-child {
+            display: none;
+        }
+        .detail-grid-2 {
+            grid-template-columns: 1fr !important;
+        }
+        .runner-profile-card > div:last-child {
+            width: 100%;
+        }
+        .runner-profile-card > div:last-child .btn {
+            flex: 1;
+        }
+        .campus-map-box {
+            padding: 0.75rem;
+        }
+        #modal-bayar {
+            align-items: flex-end !important;
+            padding: 0 !important;
+        }
+        #modal-bayar > div {
+            border-radius: 20px 20px 0 0 !important;
+            padding: 1.25rem 1.1rem calc(1.25rem + env(safe-area-inset-bottom)) !important;
+            max-height: 92vh;
+            overflow-y: auto;
+        }
     }
 </style>
 @endsection
 
 @section('content')
 <!-- Back Button -->
-<div style="margin-bottom: 1.25rem;">
-    <a href="{{ route('pesanan.index') }}" style="color: var(--text-muted); text-decoration: none; font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+<div style="margin-bottom: 0.5rem;">
+    <a href="{{ route('pesanan.index') }}" class="back-link">
         <i class="fa-solid fa-arrow-left"></i> Kembali ke Riwayat Pesanan
     </a>
 </div>
@@ -200,7 +241,7 @@
             </div>
         </div>
 
-        <div style="display: flex; flex-direction: column; align-items: center; padding: 0 1rem;">
+        <div class="route-mid" style="display: flex; flex-direction: column; align-items: center; padding: 0 1rem;">
             <div style="display: flex; align-items: center; gap: 6px; font-size: 0.725rem; font-weight: 700; color: var(--primary); background: #EFF6FF; padding: 2px 8px; border-radius: 999px;">
                 <span class="pulse-dot blue"></span> 
                 {{ $pesanan->status === 'selesai' ? 'Tiba di Lokasi' : 'Estimasi: 5 - 10 Menit' }}
@@ -210,7 +251,7 @@
             </div>
         </div>
 
-        <div style="display: flex; align-items: center; gap: 10px; text-align: right;">
+        <div class="route-end" style="display: flex; align-items: center; gap: 10px; text-align: right;">
             <div>
                 <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Titik Antar ke Pemesan</div>
                 <div style="font-weight: 700; color: var(--primary); font-size: 0.875rem;">{{ trim($antar) }}</div>
@@ -239,7 +280,7 @@
             <div style="display: flex; align-items: center; gap: 8px;">
                 <i class="fa-solid fa-{{ $isRunner ? 'person-running' : 'user-check' }}" style="color: {{ $isRunner ? 'var(--accent)' : 'var(--primary)' }}; font-size: 1.1rem;"></i>
                 <div style="font-size: 0.85rem; font-weight: 700; color: {{ $isRunner ? '#065F46' : '#1E40AF' }};">
-                    Peran Anda di Sini: {{ $isRunner ? 'Mitra Runner (Pengantar & Penerima Ongkos)' : ($isPemesan ? 'Mahasiswa Pemesan (Pembayar Ongkos & Penerima Barang)' : 'Administrator Kampus') }}
+                    Peran Anda: {{ $isRunner ? 'Runner (pengantar)' : ($isPemesan ? 'Pemesan' : 'Administrator') }}
                 </div>
             </div>
             <span style="font-size: 0.725rem; color: var(--text-muted);">Akun Login: {{ Auth::user()->nama }}</span>
@@ -266,10 +307,15 @@
                         </div>
                     </div>
                 </div>
-                <div style="display: flex; gap: 8px;">
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                     <a href="https://wa.me/{{ $rawPhone }}?text={{ $waMessage }}" target="_blank" class="btn" style="background: #25D366; color: white; padding: 0.55rem 0.95rem; font-size: 0.8rem; font-weight: 700; border-radius: 999px;">
-                        <i class="fa-brands fa-whatsapp" style="font-size: 1rem;"></i> Chat Pemesan
+                        <i class="fa-brands fa-whatsapp" style="font-size: 1rem;"></i> WhatsApp
                     </a>
+                    @if($isPemesan || $isRunner)
+                    <a href="#chat" class="btn btn-primary" style="padding: 0.55rem 0.95rem; font-size: 0.8rem; font-weight: 700; border-radius: 999px;">
+                        <i class="fa-solid fa-comments"></i> Chat di Aplikasi
+                    </a>
+                    @endif
                 </div>
             @else
                 <!-- Tampilan untuk Pemesan: Melihat data Runner yang melayani -->
@@ -295,13 +341,23 @@
                         </div>
                     </div>
                 </div>
-                <div style="display: flex; gap: 8px;">
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                     <a href="https://wa.me/{{ $rawPhone }}?text={{ $waMessage }}" target="_blank" class="btn" style="background: #25D366; color: white; padding: 0.55rem 0.95rem; font-size: 0.8rem; font-weight: 700; border-radius: 999px;">
-                        <i class="fa-brands fa-whatsapp" style="font-size: 1rem;"></i> Chat WhatsApp Runner
+                        <i class="fa-brands fa-whatsapp" style="font-size: 1rem;"></i> WhatsApp
                     </a>
+                    @if($isPemesan || $isRunner)
+                    <a href="#chat" class="btn btn-primary" style="padding: 0.55rem 0.95rem; font-size: 0.8rem; font-weight: 700; border-radius: 999px;">
+                        <i class="fa-solid fa-comments"></i> Chat di Aplikasi
+                    </a>
+                    @endif
                 </div>
             @endif
         </div>
+
+        <!-- Chat in-app (teks + foto lokasi) -->
+        @if($isPemesan || $isRunner)
+            @include('pesanan.partials.chat')
+        @endif
 
         <!-- Order Information Card -->
         <div class="card" style="padding: 1.5rem; background: #FFFFFF; border: 1px solid var(--border); border-radius: 16px; margin-bottom: 1.5rem; box-shadow: var(--shadow-sm);">
@@ -309,7 +365,7 @@
                 <i class="fa-solid fa-file-lines" style="color: var(--primary);"></i> Rincian Pesanan
             </h3>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.15rem;">
+            <div class="detail-grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.15rem;">
                 <div>
                     <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Mahasiswa Pemesan:</div>
                     <div style="font-weight: 700; color: var(--text-main); font-size: 0.875rem; margin-top: 2px;">{{ $pesanan->pengguna->nama }}</div>
@@ -534,7 +590,7 @@
                             <div style="font-size: 0.725rem; margin-top: 2px;">Sebagai pemesan, Anda dapat bayar lewat QRIS atau serahkan uang tunai ke Runner saat barang tiba.</div>
                         </div>
 
-                        <button onclick="document.getElementById('modal-bayar').style.display='flex'" class="btn btn-emerald" style="width: 100%; padding: 0.8rem; font-weight: 800; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);">
+                        <button type="button" onclick="document.getElementById('modal-bayar').style.display='flex'" class="btn btn-emerald" style="width: 100%; padding: 0.8rem; font-weight: 800; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);">
                             <i class="fa-solid fa-wallet"></i> Bayar Ongkos ke Runner (QRIS/Tunai)
                         </button>
                     @endif
@@ -550,14 +606,14 @@
 </div>
 
 <!-- Modal Pembayaran QRIS Simulator -->
-<div id="modal-bayar" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 1000; align-items: center; justify-content: center; padding: 1rem;">
+<div id="modal-bayar" role="dialog" aria-modal="true" aria-labelledby="judul-modal-bayar" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 1000; align-items: center; justify-content: center; padding: 1rem;">
     <div style="background: #FFFFFF; border: 1px solid var(--border); border-radius: 18px; width: 100%; max-width: 440px; padding: 1.75rem; box-shadow: var(--shadow-lg);">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
             <div>
-                <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-main);">Pembayaran Layanan</h3>
+                <h3 id="judul-modal-bayar" style="font-size: 1.15rem; font-weight: 800; color: var(--text-main);">Pembayaran Layanan</h3>
                 <p style="font-size: 0.75rem; color: var(--text-muted);">Pilih metode pembayaran yang kamu inginkan</p>
             </div>
-            <button onclick="document.getElementById('modal-bayar').style.display='none'" style="background: var(--bg-subtle); border: none; width: 30px; height: 30px; border-radius: 50%; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
+            <button type="button" onclick="document.getElementById('modal-bayar').style.display='none'" class="modal-close" aria-label="Tutup">&times;</button>
         </div>
 
         <form action="{{ route('pesanan.bayar', $pesanan->id) }}" method="POST" onsubmit="return confirmSwal(this, { title: 'Konfirmasi Pelunasan?', text: 'Tagihan ongkos sebesar Rp {{ number_format($pesanan->total_harga, 0, ',', '.') }} akan dicatat LUNAS.', icon: 'question', confirmButtonText: 'Ya, Konfirmasi Lunas', confirmButtonColor: '#10B981' });">

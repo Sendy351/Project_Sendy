@@ -249,6 +249,52 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 12px;
+            min-width: 0 !important;
+            text-align: left !important;
+        }
+        .order-action-col > form,
+        .order-action-col > a {
+            flex-shrink: 0;
+        }
+        .pool-hero h1 {
+            font-size: 1.45rem !important;
+        }
+        .pool-hero .btn {
+            width: 100%;
+        }
+        .pool-hero > div:last-child {
+            width: 100%;
+        }
+        /* 3 kartu statistik: di HP digeser horizontal, gak numpuk 3 baris */
+        .pool-stats-bar {
+            grid-template-columns: repeat(3, minmax(200px, 1fr));
+            overflow-x: auto;
+            scrollbar-width: none;
+            padding-bottom: 2px;
+        }
+        .pool-stats-bar::-webkit-scrollbar { display: none; }
+        .pool-stat-card { padding: 0.85rem 1rem; }
+        .route-hint { display: none; }
+        .live-ticker-bar .ticker-online { display: none !important; }
+    }
+
+    @media (max-width: 540px) {
+        .form-grid-2 {
+            grid-template-columns: 1fr !important;
+        }
+        /* Modal buat orderan jadi bottom-sheet di HP */
+        #modal-buat-orderan {
+            align-items: flex-end !important;
+            padding: 0 !important;
+        }
+        #modal-buat-orderan > div {
+            border-radius: 20px 20px 0 0 !important;
+            padding: 1.25rem 1.1rem calc(1.25rem + env(safe-area-inset-bottom)) !important;
+            max-height: 92vh !important;
+        }
+        .quick-template-chip {
+            min-height: 40px;
         }
     }
 </style>
@@ -296,7 +342,7 @@
     <div class="ticker-content" id="liveTickerText">
         <span>🚀 <strong>Sendy (Runner)</strong> baru saja menyelesaikan titip cetak laporan di Lab Komputer • 2 menit lalu</span>
     </div>
-    <div style="color: var(--text-muted); font-size: 0.75rem; display: flex; align-items: center; gap: 4px;">
+    <div class="ticker-online" style="color: var(--text-muted); font-size: 0.75rem; display: flex; align-items: center; gap: 4px;">
         <span class="pulse-dot"></span> Online
     </div>
 </div>
@@ -338,29 +384,29 @@
 <div class="filter-section">
     <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
         <!-- Search Input Form -->
-        <form action="{{ route('home') }}" method="GET" style="display: flex; gap: 8px; flex: 1; max-width: 450px;">
+        <form action="{{ route('home') }}" method="GET" style="display: flex; gap: 8px; flex: 1 1 260px; max-width: 450px;">
             @if(request('kategori_id'))
                 <input type="hidden" name="kategori_id" value="{{ request('kategori_id') }}">
             @endif
             <div style="position: relative; width: 100%;">
                 <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.85rem;"></i>
-                <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari titipan makanan, lokasi antar, atau gedung..." 
+                <input type="search" name="q" value="{{ request('q') }}" aria-label="Cari orderan" placeholder="Cari titipan, lokasi, atau gedung..." 
                     style="width: 100%; padding: 0.55rem 0.75rem 0.55rem 2.2rem; background: #F8FAFC; border: 1px solid var(--border); border-radius: 999px; font-size: 0.825rem; outline: none;">
             </div>
             <button type="submit" class="btn btn-outline btn-sm" style="border-radius: 999px;">
                 Cari
             </button>
             @if(request('q') || request('kategori_id'))
-                <a href="{{ route('home') }}" class="btn btn-outline btn-sm" style="border-radius: 999px;" title="Reset Filter">
+                <a href="{{ route('home') }}" class="btn btn-outline btn-sm" style="border-radius: 999px;" title="Reset Filter" aria-label="Reset filter">
                     <i class="fa-solid fa-rotate-left"></i>
                 </a>
             @endif
         </form>
 
-        <div style="font-size: 0.775rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px;">
-            <i class="fa-solid fa-arrows-rotate" style="color: var(--primary);"></i>
-            <span>Update Otomatis</span>
-        </div>
+        {{-- Sebelumnya tulisan "Update Otomatis" padahal halaman gak auto-refresh. Sekarang tombol muat ulang beneran. --}}
+        <a href="{{ request()->fullUrl() }}" class="btn btn-outline btn-sm" style="border-radius: 999px; font-size: 0.775rem;">
+            <i class="fa-solid fa-arrows-rotate" style="color: var(--primary);"></i> Muat Ulang
+        </a>
     </div>
 
     <!-- Category Pills -->
@@ -433,14 +479,14 @@
                                 <span class="route-label">Jemput:</span>
                                 <span class="route-place">{{ trim($jemput) }}</span>
                             </div>
-                            <span style="font-size: 0.7rem; color: var(--text-muted);"><i class="fa-solid fa-store"></i> Titik Awal</span>
+                            <span class="route-hint" style="font-size: 0.7rem; color: var(--text-muted); white-space: nowrap;"><i class="fa-solid fa-store"></i> Titik Awal</span>
                         </div>
                         <div class="route-row">
                             <div>
                                 <span class="route-label">Antar ke:</span>
                                 <span class="route-place" style="color: var(--primary);">{{ trim($antar) }}</span>
                             </div>
-                            <span style="font-size: 0.7rem; color: var(--text-muted);"><i class="fa-solid fa-location-dot"></i> Tujuan</span>
+                            <span class="route-hint" style="font-size: 0.7rem; color: var(--text-muted); white-space: nowrap;"><i class="fa-solid fa-location-dot"></i> Tujuan</span>
                         </div>
                     </div>
                 </div>
@@ -478,48 +524,85 @@
                     @endif
                 @else
                     <a href="{{ route('login') }}" class="btn btn-primary btn-sm" style="width: 100%;">
-                        Masuk untuk Ambil
+                        <i class="fa-solid fa-right-to-bracket"></i> Masuk untuk Ambil
                     </a>
                 @endauth
             </div>
         </div>
     @empty
-        <div style="text-align: center; padding: 3.5rem 1.5rem; background: #FFFFFF; border: 1px solid var(--border); border-radius: 16px;">
-            <div style="width: 60px; height: 60px; background: var(--accent-light); color: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 1.75rem;">
-                <i class="fa-solid fa-circle-check"></i>
+        @php $isFiltered = request()->filled('q') || request()->filled('kategori_id'); @endphp
+        <div style="text-align: center; padding: 3rem 1.25rem; background: #FFFFFF; border: 1px solid var(--border); border-radius: 16px;">
+            <div style="width: 60px; height: 60px; background: {{ $isFiltered ? 'var(--bg-subtle)' : 'var(--accent-light)' }}; color: {{ $isFiltered ? 'var(--text-muted)' : 'var(--accent)' }}; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 1.6rem;">
+                <i class="fa-solid fa-{{ $isFiltered ? 'magnifying-glass' : 'inbox' }}"></i>
             </div>
-            <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.35rem;">
-                Semua Orderan Kampus Sudah Diambil Runner!
-            </h3>
-            <p style="color: var(--text-muted); font-size: 0.85rem; max-width: 480px; margin: 0 auto 1.25rem; line-height: 1.5;">
-                Saat ini belum ada orderan yang menunggu di pool. Mahasiswa lain yang butuh titip biasanya posting saat jam makan siang atau jam pergantian kelas.
-            </p>
-            @auth
-                <button onclick="openCreateModal()" class="btn btn-primary">
-                    <i class="fa-solid fa-plus-circle"></i> Buat Orderan Titipan Baru
-                </button>
-            @endauth
+            @if($isFiltered)
+                {{-- Sebelumnya hasil pencarian kosong tetap bilang "Semua orderan sudah diambil" (menyesatkan) --}}
+                <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.35rem;">
+                    Gak ada orderan yang cocok
+                </h3>
+                <p style="color: var(--text-muted); font-size: 0.85rem; max-width: 480px; margin: 0 auto 1.25rem; line-height: 1.5;">
+                    Coba kata kunci lain atau hapus filter kategori.
+                </p>
+                <a href="{{ route('home') }}" class="btn btn-outline">
+                    <i class="fa-solid fa-rotate-left"></i> Reset Pencarian
+                </a>
+            @else
+                <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.35rem;">
+                    Belum ada orderan di pool
+                </h3>
+                <p style="color: var(--text-muted); font-size: 0.85rem; max-width: 480px; margin: 0 auto 1.25rem; line-height: 1.5;">
+                    Semua orderan sudah diambil runner. Mahasiswa biasanya posting saat jam makan siang atau pergantian kelas.
+                </p>
+                @auth
+                    <button type="button" onclick="openCreateModal()" class="btn btn-primary">
+                        <i class="fa-solid fa-plus-circle"></i> Buat Orderan
+                    </button>
+                @else
+                    <a href="{{ route('login') }}" class="btn btn-primary">
+                        <i class="fa-solid fa-right-to-bracket"></i> Masuk untuk Posting
+                    </a>
+                @endauth
+            @endif
         </div>
     @endforelse
 </div>
 
 <!-- Pagination -->
-<div style="margin-top: 1rem;">
-    {{ $openOrders->withQueryString()->links() }}
-</div>
+{{-- View pagination bawaan Laravel pakai class Tailwind yang gak di-load di layout ini (panahnya jadi raksasa). Ganti markup sederhana. --}}
+@if($openOrders->hasPages())
+    <nav aria-label="Navigasi halaman" style="margin-top: 1rem; margin-bottom: 1.5rem;">
+        <ul class="pager">
+            <li>
+                @if($openOrders->onFirstPage())
+                    <span aria-disabled="true"><i class="fa-solid fa-chevron-left"></i>&nbsp; Sebelumnya</span>
+                @else
+                    <a href="{{ $openOrders->withQueryString()->previousPageUrl() }}" rel="prev"><i class="fa-solid fa-chevron-left"></i>&nbsp; Sebelumnya</a>
+                @endif
+            </li>
+            <li><span style="background: #FFFFFF;">{{ $openOrders->currentPage() }} / {{ $openOrders->lastPage() }}</span></li>
+            <li>
+                @if($openOrders->hasMorePages())
+                    <a href="{{ $openOrders->withQueryString()->nextPageUrl() }}" rel="next">Berikutnya &nbsp;<i class="fa-solid fa-chevron-right"></i></a>
+                @else
+                    <span aria-disabled="true">Berikutnya &nbsp;<i class="fa-solid fa-chevron-right"></i></span>
+                @endif
+            </li>
+        </ul>
+    </nav>
+@endif
 
 <!-- Modal Posting Orderan Baru (Cepat, Clean, & Production-Ready) -->
-<div id="modal-buat-orderan" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 1000; align-items: center; justify-content: center; padding: 1rem;">
+<div id="modal-buat-orderan" role="dialog" aria-modal="true" aria-labelledby="judul-buat-orderan" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 1000; align-items: center; justify-content: center; padding: 1rem;">
     <div style="background: #FFFFFF; border: 1px solid var(--border); border-radius: 20px; width: 100%; max-width: 540px; padding: 1.75rem 2rem; box-shadow: var(--shadow-lg); max-height: 90vh; overflow-y: auto;">
         
         <!-- Modal Header -->
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 1.25rem;">
             <div>
                 <span style="font-size: 0.725rem; font-weight: 800; color: var(--primary); text-transform: uppercase;">Posting ke Pool Kampus</span>
-                <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin-top: 2px;">Buat Titipan / Orderan Baru</h3>
+                <h3 id="judul-buat-orderan" style="font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin-top: 2px;">Buat Orderan Baru</h3>
                 <p style="font-size: 0.78rem; color: var(--text-muted);">Runner terdekat di kampus akan segera mengambil dan mengantar tugasmu.</p>
             </div>
-            <button onclick="closeCreateModal()" style="background: var(--bg-subtle); border: none; width: 32px; height: 32px; border-radius: 50%; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
+            <button type="button" onclick="closeCreateModal()" class="modal-close" aria-label="Tutup">&times;</button>
         </div>
 
         <!-- Quick Shortcut Templates -->
@@ -548,7 +631,7 @@
 
             <!-- Layanan Jasa -->
             <div style="margin-bottom: 1rem;">
-                <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 5px;">
+                <label for="select-jasa" style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 5px;">
                     Jenis Kebutuhan Jasa <span style="color: var(--rose);">*</span>
                 </label>
                 <select name="jasa_id" id="select-jasa" required onchange="updateDefaultFee()" 
@@ -563,9 +646,9 @@
             </div>
 
             <!-- Route Inputs -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem;">
+            <div class="form-grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem;">
                 <div>
-                    <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 5px;">
+                    <label for="input-jemput" style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 5px;">
                         <i class="fa-solid fa-store" style="color: var(--accent);"></i> Titik Jemput / Beli <span style="color: var(--rose);">*</span>
                     </label>
                     <input type="text" name="lokasi_jemput" id="input-jemput" required placeholder="Contoh: Kantin Biru / Fotocopy Perpus" list="list-jemput"
@@ -579,7 +662,7 @@
                     </datalist>
                 </div>
                 <div>
-                    <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 5px;">
+                    <label for="input-antar" style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 5px;">
                         <i class="fa-solid fa-location-dot" style="color: var(--primary);"></i> Titik Antar ke Kamu <span style="color: var(--rose);">*</span>
                     </label>
                     <input type="text" name="lokasi_antar" id="input-antar" required placeholder="Contoh: Gedung C Ruang 304 / Lab" list="list-antar"
@@ -596,7 +679,7 @@
 
             <!-- Notes & Description -->
             <div style="margin-bottom: 1rem;">
-                <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 5px;">
+                <label for="input-deskripsi" style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 5px;">
                     Rincian Barang / Catatan Pesanan <span style="color: var(--rose);">*</span>
                 </label>
                 <textarea name="deskripsi" id="input-deskripsi" required rows="3" placeholder="Contoh: Titip beli nasi ayam bakar sambal terasi + es jeruk di Bu Sri. Uang makan Rp 18.000 dibayar tunai saat pesanan diserahkan."
@@ -604,20 +687,20 @@
             </div>
 
             <!-- Ongkos & Waktu -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.25rem;">
+            <div class="form-grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.25rem;">
                 <div>
-                    <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 5px;">
+                    <label for="input-ongkos" style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 5px;">
                         Ongkos untuk Runner (Rp) <span style="color: var(--rose);">*</span>
                     </label>
-                    <input type="number" id="input-ongkos" name="ongkos" required min="3000" step="500" value="8000"
+                    <input type="number" inputmode="numeric" id="input-ongkos" name="ongkos" required min="3000" step="500" value="8000"
                         style="width: 100%; padding: 0.68rem 0.85rem; background: #FFFFFF; border: 1px solid var(--border); border-radius: 10px; color: var(--primary); font-size: 1.05rem; font-weight: 800; outline: none;">
                     <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 3px;">Min. Rp 3.000 (Saran wajar kampus)</div>
                 </div>
                 <div>
-                    <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 5px;">
+                    <label for="input-jadwal" style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 5px;">
                         Batas Jam Diantar
                     </label>
-                    <input type="datetime-local" name="jadwal" value="{{ now()->addMinutes(40)->format('Y-m-d\TH:i') }}"
+                    <input type="datetime-local" id="input-jadwal" name="jadwal" value="{{ now()->addMinutes(40)->format('Y-m-d\TH:i') }}"
                         style="width: 100%; padding: 0.68rem 0.85rem; background: #FFFFFF; border: 1px solid var(--border); border-radius: 10px; color: var(--text-main); font-size: 0.825rem; outline: none;">
                 </div>
             </div>
@@ -642,6 +725,7 @@
     // Modal controls
     function openCreateModal() {
         document.getElementById('modal-buat-orderan').style.display = 'flex';
+        setTimeout(function () { document.getElementById('select-jasa')?.focus(); }, 50);
     }
 
     function closeCreateModal() {

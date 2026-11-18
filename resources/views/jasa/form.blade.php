@@ -5,7 +5,7 @@
 @section('content')
 <div style="max-width: 680px; margin: 1.5rem auto;">
     <div style="margin-bottom: 1.25rem;">
-        <a href="{{ route('jasa.index') }}" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+        <a href="{{ route('jasa.index') }}" class="back-link">
             <i class="fa-solid fa-arrow-left"></i> Batal & Kembali
         </a>
     </div>
@@ -31,7 +31,7 @@
                 <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">
                     Kategori Layanan
                 </label>
-                <select name="kategori_id" required 
+                <select name="kategori_id" aria-label="Kategori" required 
                     style="width: 100%; padding: 0.75rem 1rem; background: #FFFFFF; border: 1px solid var(--border); border-radius: 10px; color: var(--text-main); font-size: 0.9rem; outline: none;">
                     <option value="">-- Pilih Kategori Kampus --</option>
                     @foreach($kategoriList as $kat)
@@ -46,17 +46,17 @@
                 <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">
                     Nama Layanan Jasa
                 </label>
-                <input type="text" name="nama" value="{{ old('nama', $jasa->nama) }}" required 
+                <input type="text" name="nama" aria-label="Nama" value="{{ old('nama', $jasa->nama) }}" required 
                     placeholder="Contoh: Print Skripsi Kilat / Jilid Hard Cover"
                     style="width: 100%; padding: 0.75rem 1rem; background: #FFFFFF; border: 1px solid var(--border); border-radius: 10px; color: var(--text-main); font-size: 0.9rem; outline: none;">
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1.25rem;">
+            <div class="form-grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1.25rem;">
                 <div>
                     <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">
                         Tarif Jasa (Rp)
                     </label>
-                    <input type="number" name="harga" value="{{ old('harga', $jasa->harga) }}" required min="0" step="1000"
+                    <input type="number" name="harga" aria-label="Harga" value="{{ old('harga', $jasa->harga) }}" required min="0" step="1000"
                         placeholder="Contoh: 15000"
                         style="width: 100%; padding: 0.75rem 1rem; background: #FFFFFF; border: 1px solid var(--border); border-radius: 10px; color: var(--text-main); font-size: 0.9rem; outline: none;">
                 </div>
@@ -64,7 +64,7 @@
                     <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">
                         Estimasi Pengerjaan
                     </label>
-                    <input type="text" name="durasi" value="{{ old('durasi', $jasa->durasi) }}" required 
+                    <input type="text" name="durasi" aria-label="Durasi" value="{{ old('durasi', $jasa->durasi) }}" required 
                         placeholder="Contoh: 30 Menit / 1 - 2 Jam"
                         style="width: 100%; padding: 0.75rem 1rem; background: #FFFFFF; border: 1px solid var(--border); border-radius: 10px; color: var(--text-main); font-size: 0.9rem; outline: none;">
                 </div>
@@ -74,7 +74,7 @@
                 <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">
                     Status Ketersediaan
                 </label>
-                <select name="status" required 
+                <select name="status" aria-label="Status" required 
                     style="width: 100%; padding: 0.75rem 1rem; background: #FFFFFF; border: 1px solid var(--border); border-radius: 10px; color: var(--text-main); font-size: 0.9rem; outline: none;">
                     <option value="aktif" {{ old('status', $jasa->status) === 'aktif' ? 'selected' : '' }}>Aktif (Siap Menerima Pesanan)</option>
                     <option value="nonaktif" {{ old('status', $jasa->status) === 'nonaktif' ? 'selected' : '' }}>Tutup Sementara</option>
@@ -85,7 +85,7 @@
                 <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">
                     Rincian & Cakupan Layanan
                 </label>
-                <textarea name="deskripsi" rows="4" 
+                <textarea name="deskripsi" aria-label="Deskripsi" rows="4" 
                     placeholder="Jelaskan spesifikasi pengerjaan, ketentuan antar ke fakultas, atau catatan penting..."
                     style="width: 100%; padding: 0.75rem 1rem; background: #FFFFFF; border: 1px solid var(--border); border-radius: 10px; color: var(--text-main); font-size: 0.9rem; outline: none;">{{ old('deskripsi', $jasa->deskripsi) }}</textarea>
             </div>
