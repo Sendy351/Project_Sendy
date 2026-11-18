@@ -17,7 +17,15 @@ class PesanChat extends Model
         'pengirim_id',
         'isi',
         'foto_path',
+        'foto_data',
         'dibaca_pada',
+    ];
+
+    /**
+     * foto_data berisi biner gambar: jangan pernah ikut ke JSON/array.
+     */
+    protected $hidden = [
+        'foto_data',
     ];
 
     protected function casts(): array
