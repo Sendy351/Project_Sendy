@@ -37,7 +37,7 @@
     </div>
 
     <a href="{{ route('home') }}#buat-order" class="btn btn-primary btn-sm">
-        <i class="fa-solid fa-plus-circle"></i> Buat Titipan Baru
+        <i class="fa-solid fa-plus-circle"></i> Buat Orderan
     </a>
 </div>
 
@@ -49,7 +49,7 @@
                 <tr style="background: var(--bg-page); border-bottom: 1px solid var(--border); color: var(--text-secondary); font-size: 0.78rem; text-transform: uppercase;">
                     <th style="padding: 0.85rem 1.25rem;">No. Pesanan</th>
                     <th style="padding: 0.85rem 1.25rem;">Layanan Jasa</th>
-                    <th style="padding: 0.85rem 1.25rem;">{{ (Auth::check() && Auth::user()->isPenyedia()) ? 'Mahasiswa Pemesan' : 'Mitra Runner' }}</th>
+                    <th style="padding: 0.85rem 1.25rem;">Lawan Transaksi</th>
                     <th style="padding: 0.85rem 1.25rem;">Total Ongkos</th>
                     <th style="padding: 0.85rem 1.25rem;">Status Delivery</th>
                     <th style="padding: 0.85rem 1.25rem;">Pembayaran</th>
@@ -69,10 +69,13 @@
                             </div>
                         </td>
                         <td style="padding: 1rem 1.25rem;">
-                            @if(Auth::check() && Auth::user()->isPenyedia())
+                            {{-- Sebelumnya: kalau login sbg penyedia, SEMUA baris dianggap "pemesan", padahal list juga berisi orderan yg dia pesan sendiri --}}
+                            @if($item->pengguna_id !== Auth::id())
+                                <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700;">PEMESAN</div>
                                 <div style="font-weight: 600; color: var(--text-main);">{{ $item->pengguna->nama ?? 'Mahasiswa' }}</div>
                                 <div style="font-size: 0.75rem; color: var(--text-muted);">{{ $item->pengguna->telepon ?? '-' }}</div>
                             @else
+                                <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700;">RUNNER</div>
                                 <div style="font-weight: 600; color: var(--text-main);">{{ $item->penyedia->nama ?? 'Mitra Kampus' }}</div>
                                 <div style="font-size: 0.75rem; color: var(--amber);"><i class="fa-solid fa-star"></i> {{ number_format($item->penyedia->rating ?? 5.0, 1) }} (Runner)</div>
                             @endif
@@ -90,9 +93,10 @@
                                     'dibatalkan' => ['bg' => 'var(--rose-light)', 'text' => 'var(--rose)', 'border' => '#FECDD3', 'icon' => 'circle-xmark'],
                                 ];
                                 $st = $statusColors[$item->status] ?? $statusColors['menunggu'];
+                                $statusLabel = ['menunggu' => 'MENUNGGU RUNNER', 'diterima' => 'RUNNER DITUGASKAN', 'dimulai' => 'SEDANG DIANTAR', 'selesai' => 'SELESAI', 'dibatalkan' => 'DIBATALKAN'];
                             @endphp
                             <span style="background: {{ $st['bg'] }}; color: {{ $st['text'] }}; border: 1px solid {{ $st['border'] }}; padding: 3px 9px; border-radius: 999px; font-size: 0.725rem; font-weight: 800; display: inline-flex; align-items: center; gap: 5px;">
-                                <i class="fa-solid fa-{{ $st['icon'] }}"></i> {{ strtoupper($item->status) }}
+                                <i class="fa-solid fa-{{ $st['icon'] }}"></i> {{ $statusLabel[$item->status] ?? strtoupper($item->status) }}
                             </span>
                         </td>
                         <td style="padding: 1rem 1.25rem;">
@@ -108,7 +112,7 @@
                         </td>
                         <td style="padding: 1rem 1.25rem; text-align: right;">
                             <a href="{{ route('pesanan.show', $item->id) }}" class="btn btn-outline btn-sm" style="font-size: 0.8rem;">
-                                Live Tracking <i class="fa-solid fa-chevron-right"></i>
+                                Lihat Detail <i class="fa-solid fa-chevron-right"></i>
                             </a>
                         </td>
                     </tr>
@@ -116,7 +120,8 @@
                     <tr>
                         <td colspan="7" style="text-align: center; padding: 3.5rem 1rem; color: var(--text-muted);">
                             <i class="fa-solid fa-receipt" style="font-size: 2.5rem; color: var(--border); margin-bottom: 0.75rem; display: block;"></i>
-                            Belum ada riwayat pesanan. Posting titipan pertamamu sekarang!
+                            Belum ada pesanan. Posting orderan pertamamu sekarang!<br>
+                            <a href="{{ route('home') }}#buat-order" class="btn btn-primary btn-sm" style="margin-top: 1rem;"><i class="fa-solid fa-plus-circle"></i> Buat Orderan</a>
                         </td>
                     </tr>
                 @endforelse
@@ -137,6 +142,7 @@
                 'dibatalkan' => ['bg' => 'var(--rose-light)', 'text' => 'var(--rose)', 'border' => '#FECDD3', 'icon' => 'circle-xmark'],
             ];
             $st = $statusColors[$item->status] ?? $statusColors['menunggu'];
+            $statusLabel = ['menunggu' => 'MENUNGGU RUNNER', 'diterima' => 'RUNNER DITUGASKAN', 'dimulai' => 'SEDANG DIANTAR', 'selesai' => 'SELESAI', 'dibatalkan' => 'DIBATALKAN'];
         @endphp
         <div class="card" style="padding: 1.15rem; background: #FFFFFF; border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-sm);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
@@ -144,7 +150,7 @@
                     #ORD-{{ str_pad($item->id, 4, '0', STR_PAD_LEFT) }}
                 </span>
                 <span style="background: {{ $st['bg'] }}; color: {{ $st['text'] }}; border: 1px solid {{ $st['border'] }}; padding: 3px 8px; border-radius: 999px; font-size: 0.7rem; font-weight: 800; display: inline-flex; align-items: center; gap: 4px;">
-                    <i class="fa-solid fa-{{ $st['icon'] }}"></i> {{ strtoupper($item->status) }}
+                    <i class="fa-solid fa-{{ $st['icon'] }}"></i> {{ $statusLabel[$item->status] ?? strtoupper($item->status) }}
                 </span>
             </div>
 
@@ -165,14 +171,16 @@
                 </div>
 
                 <a href="{{ route('pesanan.show', $item->id) }}" class="btn btn-primary btn-sm" style="padding: 0.5rem 1rem;">
-                    Buka Tracking <i class="fa-solid fa-arrow-right"></i>
+                    Lihat Detail <i class="fa-solid fa-arrow-right"></i>
                 </a>
             </div>
         </div>
     @empty
         <div style="text-align: center; padding: 3rem 1rem; background: #FFFFFF; border: 1px solid var(--border); border-radius: 14px;">
             <i class="fa-solid fa-receipt" style="font-size: 2.25rem; color: var(--text-muted); margin-bottom: 0.5rem;"></i>
-            <p style="font-size: 0.85rem; color: var(--text-muted);">Belum ada riwayat pesanan.</p>
+            <p style="font-size: 0.95rem; font-weight: 700; color: var(--text-main);">Belum ada pesanan</p>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin: 4px 0 1rem;">Posting orderan pertamamu, atau ambil orderan dari pool.</p>
+            <a href="{{ route('home') }}#buat-order" class="btn btn-primary"><i class="fa-solid fa-plus-circle"></i> Buat Orderan</a>
         </div>
     @endforelse
 </div>

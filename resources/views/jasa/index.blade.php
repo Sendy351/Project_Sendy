@@ -99,7 +99,7 @@
                 <div style="padding-left: 12px; color: var(--text-muted);">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </div>
-                <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari jasa kampus (misal: print, makan, laptop)..." 
+                <input type="text" name="q" aria-label="Cari layanan" value="{{ request('q') }}" placeholder="Cari jasa kampus (misal: print, makan, laptop)..." 
                     style="width: 100%; border: none; padding: 0.75rem 0.5rem; color: var(--text-main); font-size: 0.9rem; outline: none; background: transparent;">
             </div>
             @if(request('kategori_id'))

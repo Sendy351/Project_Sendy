@@ -62,4 +62,9 @@ class Pesanan extends Model
     {
         return $this->hasMany(Ulasan::class, 'pesanan_id');
     }
+
+    public function pesanChat(): HasMany
+    {
+        return $this->hasMany(PesanChat::class, 'pesanan_id');
+    }
 }

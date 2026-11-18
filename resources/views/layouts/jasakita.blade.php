@@ -26,11 +26,11 @@
             --primary: #2563EB;
             --primary-hover: #1D4ED8;
             --primary-light: #EFF6FF;
-            --accent: #10B981;
+            --accent: #047857; /* audit: #10B981 kontrasnya cuma ~2.3:1 sebagai teks */
             --accent-light: #ECFDF5;
-            --amber: #D97706;
+            --amber: #B45309; /* audit: #D97706 ~3:1 di atas amber-light */
             --amber-light: #FFFBEB;
-            --rose: #E11D48;
+            --rose: #BE123C;
             --rose-light: #FFF1F2;
             --text-main: #0F172A;
             --text-secondary: #475569;
@@ -69,8 +69,8 @@
             align-items: center;
         }
 
-        /* Main Navbar */
-        nav {
+        /* Main Navbar (scoped: jangan kena ke .mobile-bottom-bar yang juga <nav>) */
+        nav.main-nav {
             background: #FFFFFF;
             border-bottom: 1px solid var(--border);
             position: sticky;
@@ -269,7 +269,7 @@
         }
 
         .btn-emerald:hover {
-            background: #059669;
+            background: #065F46;
             transform: translateY(-1px);
         }
 
@@ -340,25 +340,156 @@
             margin-top: auto;
         }
 
+        /* ===== Audit UI: aksesibilitas & state global ===== */
+        /* Fokus terlihat jelas (banyak input pakai outline:none inline) */
+        input:not([type=radio]):not([type=checkbox]):focus,
+        select:focus,
+        textarea:focus {
+            border-color: var(--primary) !important;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
+        }
+        a:focus-visible,
+        button:focus-visible,
+        .btn:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+        input[type=radio],
+        input[type=checkbox] {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+        /* State loading untuk tombol submit (anti double-submit) */
+        .btn.is-loading {
+            opacity: 0.75;
+            pointer-events: none;
+        }
+        .btn[disabled] {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        /* Link "Kembali" kecil biar gampang di-tap */
+        .back-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            min-height: 44px;
+            padding-right: 8px;
+        }
+        .back-link:hover { color: var(--primary); }
+
+        /* Tombol tutup modal (×) */
+        .modal-close {
+            background: var(--bg-subtle);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: var(--text-secondary);
+            font-size: 1.3rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .modal-close:hover { background: var(--border); color: var(--text-main); }
+
+        /* Pagination (view bawaan Laravel butuh Tailwind yang gak di-load di layout ini) */
+        .pager {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+        .pager a, .pager span {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 44px;
+            min-height: 44px;
+            padding: 0 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: #FFFFFF;
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-decoration: none;
+        }
+        .pager span { color: var(--text-muted); background: var(--bg-subtle); }
+        .pager a:hover { border-color: var(--primary); color: var(--primary); }
+
+        /* Grid form 2 kolom -> 1 kolom di layar sempit */
+        @media (max-width: 540px) {
+            .form-grid-2 { grid-template-columns: 1fr !important; }
+        }
+
         /* Media Queries for Mobile Responsiveness */
         @media (max-width: 868px) {
             body {
-                padding-bottom: 70px; /* Space for mobile bottom bar */
+                padding-bottom: calc(76px + env(safe-area-inset-bottom)); /* Space for mobile bottom bar */
             }
             .nav-links {
                 display: none;
             }
             .mobile-toggle {
-                display: block;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 44px;
+                height: 44px;
+                padding: 0;
             }
             .top-info-bar {
                 display: none;
+            }
+            nav.main-nav {
+                padding: 0.6rem 1rem;
+            }
+            .nav-inner {
+                flex-wrap: wrap;
+            }
+            /* Header HP: cukup logo + avatar + hamburger. Aksi lain ada di bottom bar / menu */
+            .brand-tagline,
+            .nav-actions .nav-cta,
+            .nav-actions .user-pill-text,
+            .nav-actions .nav-logout,
+            .nav-actions .nav-guest-login {
+                display: none !important;
+            }
+            .user-pill {
+                padding: 4px;
+            }
+            .nav-actions .btn-sm {
+                min-height: 44px;
             }
             .main-container {
                 padding: 1.25rem 1rem;
             }
             .mobile-bottom-bar {
                 display: flex !important;
+            }
+            /* Tap target minimal ~44px di layar sentuh */
+            .btn {
+                min-height: 44px;
+            }
+            /* Cegah iOS auto-zoom saat fokus input (font < 16px) */
+            input:not([type=radio]):not([type=checkbox]),
+            select,
+            textarea {
+                font-size: 16px !important;
+            }
+            .mobile-menu .nav-link {
+                min-height: 48px;
+                font-size: 0.95rem;
             }
         }
 
@@ -373,9 +504,9 @@
             backdrop-filter: blur(12px);
             border-top: 1px solid var(--border);
             z-index: 99;
-            padding: 8px 12px 10px;
+            padding: 6px 8px calc(8px + env(safe-area-inset-bottom));
             justify-content: space-around;
-            align-items: center;
+            align-items: flex-end;
             box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.05);
         }
 
@@ -383,13 +514,21 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: flex-end;
             gap: 3px;
             text-decoration: none;
-            color: var(--text-muted);
-            font-size: 0.68rem;
+            color: var(--text-secondary);
+            font-size: 0.72rem;
             font-weight: 600;
             transition: color 0.2s;
             position: relative;
+            flex: 1;
+            min-width: 0;
+            min-height: 48px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
         }
 
         .bottom-nav-item i {
@@ -428,6 +567,7 @@
             background-color: var(--accent);
             display: inline-block;
             box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            background-color: #10B981;
             animation: pulse-ring 1.8s infinite;
         }
 
@@ -461,6 +601,12 @@
                 transform: scale(1);
                 box-shadow: 0 0 0 6px rgba(37, 99, 235, 0);
             }
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
+            }
+        }
+
         /* SweetAlert2 Modern Styling */
         .swal2-popup {
             font-family: 'Plus Jakarta Sans', sans-serif !important;
@@ -493,6 +639,15 @@
             padding: 0.65rem 1.4rem !important;
             font-size: 0.875rem !important;
         }
+        .swal2-popup.swal2-toast {
+            padding: 0.75rem 1rem !important;
+            border-radius: 14px !important;
+        }
+        .swal2-popup.swal2-toast .swal2-title {
+            font-size: 0.875rem !important;
+            font-weight: 700 !important;
+            letter-spacing: 0 !important;
+        }
     </style>
     @yield('styles')
 </head>
@@ -510,7 +665,7 @@
     </div>
 
     <!-- Main Navbar -->
-    <nav>
+    <nav class="main-nav">
         <div class="nav-inner" style="flex-wrap: wrap;">
             <a href="{{ route('home') }}" class="nav-brand">
                 <div class="brand-logo"><i class="fa-solid fa-bolt"></i></div>
@@ -557,25 +712,25 @@
             <div class="nav-actions">
                 @auth
                     @if(!request()->routeIs('home'))
-                        <a href="{{ route('home') }}#buat-order" class="btn btn-primary btn-sm">
+                        <a href="{{ route('home') }}#buat-order" class="btn btn-primary btn-sm nav-cta">
                             <i class="fa-solid fa-plus-circle"></i> Buat Orderan
                         </a>
                     @endif
-                    <div class="user-pill">
-                        <div class="user-avatar">{{ strtoupper(substr(Auth::user()->nama, 0, 1)) }}</div>
-                        <div style="line-height: 1.1;">
+                    <div class="user-pill" title="{{ Auth::user()->nama }} ({{ Auth::user()->peran }})">
+                        <div class="user-avatar" aria-hidden="true">{{ strtoupper(substr(Auth::user()->nama, 0, 1)) }}</div>
+                        <div class="user-pill-text" style="line-height: 1.1;">
                             <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-main);">{{ Str::limit(Auth::user()->nama, 12) }}</div>
                             <span class="role-tag role-{{ Auth::user()->peran }}">{{ Auth::user()->peran }}</span>
                         </div>
                     </div>
-                    <form action="{{ route('logout') }}" method="POST" style="display: inline;" onsubmit="return confirmSwal(this, { title: 'Konfirmasi Keluar', text: 'Apakah Anda yakin ingin keluar dari akun?', icon: 'question', confirmButtonText: 'Ya, Keluar' });">
+                    <form class="nav-logout" action="{{ route('logout') }}" method="POST" style="display: inline;" onsubmit="return confirmSwal(this, { title: 'Konfirmasi Keluar', text: 'Apakah Anda yakin ingin keluar dari akun?', icon: 'question', confirmButtonText: 'Ya, Keluar' });">
                         @csrf
-                        <button type="submit" class="btn btn-outline btn-sm" title="Keluar">
+                        <button type="submit" class="btn btn-outline btn-sm" title="Keluar" aria-label="Keluar">
                             <i class="fa-solid fa-arrow-right-from-bracket"></i>
                         </button>
                     </form>
                 @else
-                    <a href="{{ route('login') }}" class="btn btn-outline btn-sm">
+                    <a href="{{ route('login') }}" class="btn btn-outline btn-sm nav-guest-login">
                         <i class="fa-solid fa-right-to-bracket"></i> Masuk
                     </a>
                     <a href="{{ route('register') }}" class="btn btn-primary btn-sm">
@@ -584,21 +739,30 @@
                 @endauth
 
                 <!-- Hamburger Button for Mobile -->
-                <button type="button" class="mobile-toggle" onclick="toggleMobileMenu()" aria-label="Menu">
+                <button type="button" class="mobile-toggle" onclick="toggleMobileMenu()" aria-label="Buka menu" aria-controls="mobileNavMenu" aria-expanded="false" id="mobileMenuToggle">
                     <i class="fa-solid fa-bars"></i>
                 </button>
             </div>
 
-            <!-- Mobile Dropdown Menu -->
+            <!-- Mobile Dropdown Menu (label disamakan dengan menu desktop) -->
             <div class="mobile-menu" id="mobileNavMenu">
+                @auth
+                <div style="display: flex; align-items: center; gap: 10px; padding: 0.25rem 0.85rem 0.75rem;">
+                    <div class="user-avatar" style="width: 36px; height: 36px; font-size: 0.9rem;" aria-hidden="true">{{ strtoupper(substr(Auth::user()->nama, 0, 1)) }}</div>
+                    <div style="line-height: 1.2;">
+                        <div style="font-size: 0.9rem; font-weight: 700; color: var(--text-main);">{{ Auth::user()->nama }}</div>
+                        <span class="role-tag role-{{ Auth::user()->peran }}">{{ Auth::user()->peran }}</span>
+                    </div>
+                </div>
+                @endauth
                 <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">
-                    <i class="fa-solid fa-bolt" style="color: var(--primary);"></i> Pool Orderan Kampus
+                    <i class="fa-solid fa-bolt" style="color: var(--primary);"></i> Pool Orderan
                 </a>
                 <a href="{{ route('jasa.index') }}" class="nav-link {{ request()->routeIs('jasa.index') ? 'active' : '' }}">
-                    <i class="fa-solid fa-layer-group"></i> Panduan Tarif Jasa
+                    <i class="fa-solid fa-layer-group"></i> Panduan Tarif
                 </a>
                 <a href="{{ route('kategori.index') }}" class="nav-link {{ request()->routeIs('kategori.*') ? 'active' : '' }}">
-                    <i class="fa-solid fa-tags"></i> Kategori Layanan
+                    <i class="fa-solid fa-tags"></i> Kategori
                 </a>
                 @auth
                 <a href="{{ route('pesanan.index') }}" class="nav-link {{ request()->routeIs('pesanan.*') ? 'active' : '' }}">
@@ -606,9 +770,19 @@
                 </a>
                 @if(Auth::user()->isPenyedia() || Auth::user()->isAdmin())
                 <a href="{{ route('jasa.create') }}" class="nav-link {{ request()->routeIs('jasa.create') ? 'active' : '' }}">
-                    <i class="fa-solid fa-circle-plus"></i> Tambah Template Jasa
+                    <i class="fa-solid fa-circle-plus"></i> Tambah Jasa
                 </a>
                 @endif
+                <form action="{{ route('logout') }}" method="POST" onsubmit="return confirmSwal(this, { title: 'Konfirmasi Keluar', text: 'Apakah Anda yakin ingin keluar dari akun?', icon: 'question', confirmButtonText: 'Ya, Keluar' });">
+                    @csrf
+                    <button type="submit" class="nav-link" style="width: 100%; border: none; background: none; cursor: pointer; color: var(--rose); font-family: inherit;">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i> Keluar
+                    </button>
+                </form>
+                @else
+                <a href="{{ route('login') }}" class="nav-link">
+                    <i class="fa-solid fa-right-to-bracket"></i> Masuk
+                </a>
                 @endauth
             </div>
         </div>
@@ -668,11 +842,11 @@
         </a>
 
         @auth
-            <a href="{{ route('home') }}#buat-order" onclick="if(typeof openCreateModal === 'function'){ openCreateModal(); return false; }" class="bottom-nav-item" title="Buat Orderan Cepat">
+            <a href="{{ route('home') }}#buat-order" onclick="if(typeof openCreateModal === 'function'){ openCreateModal(); return false; }" class="bottom-nav-item" title="Buat Orderan">
                 <div class="bottom-nav-fab">
                     <i class="fa-solid fa-plus"></i>
                 </div>
-                <span style="margin-top: 2px;">Posting</span>
+                <span style="margin-top: 2px;">Buat Order</span>
             </a>
 
             <a href="{{ route('pesanan.index') }}" class="bottom-nav-item {{ request()->routeIs('pesanan.*') ? 'active' : '' }}">
@@ -680,12 +854,13 @@
                 <span>Pesanan</span>
             </a>
 
-            <a href="{{ route('pesanan.index') }}" class="bottom-nav-item">
+            {{-- Sebelumnya "Akun" cuma link ke halaman Pesanan (duplikat). Sekarang buka menu akun (profil + keluar). --}}
+            <button type="button" class="bottom-nav-item" onclick="toggleMobileMenu(true)" aria-controls="mobileNavMenu">
                 <i class="fa-solid fa-circle-user"></i>
                 <span>Akun</span>
-            </a>
+            </button>
         @else
-            <a href="{{ route('login') }}" class="bottom-nav-item" title="Masuk">
+            <a href="{{ route('login') }}" class="bottom-nav-item {{ request()->routeIs('login') ? 'active' : '' }}" title="Masuk">
                 <div class="bottom-nav-fab">
                     <i class="fa-solid fa-right-to-bracket"></i>
                 </div>
@@ -697,18 +872,63 @@
                 <span>Kategori</span>
             </a>
 
-            <a href="{{ route('login') }}" class="bottom-nav-item">
-                <i class="fa-solid fa-circle-user"></i>
-                <span>Masuk</span>
+            {{-- Sebelumnya tombol "Masuk" muncul dua kali. Item terakhir sekarang "Daftar". --}}
+            <a href="{{ route('register') }}" class="bottom-nav-item {{ request()->routeIs('register') ? 'active' : '' }}">
+                <i class="fa-solid fa-user-plus"></i>
+                <span>Daftar</span>
             </a>
         @endauth
     </nav>
 
     <script>
-        function toggleMobileMenu() {
+        function toggleMobileMenu(forceOpen) {
             const menu = document.getElementById('mobileNavMenu');
-            menu.classList.toggle('active');
+            const toggle = document.getElementById('mobileMenuToggle');
+            const open = forceOpen === true ? true : !menu.classList.contains('active');
+            menu.classList.toggle('active', open);
+            if (toggle) {
+                toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+                toggle.innerHTML = open ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-bars"></i>';
+            }
+            if (open && forceOpen === true) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         }
+
+        // Tombol submit -> state loading + cegah klik dobel
+        function setFormLoading(formElement) {
+            const btn = formElement.querySelector('button[type=submit], button:not([type])');
+            if (!btn || btn.classList.contains('is-loading')) return;
+            btn.classList.add('is-loading');
+            btn.setAttribute('aria-busy', 'true');
+            btn.dataset.originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
+        }
+        document.addEventListener('submit', function (e) {
+            if (e.defaultPrevented || e.target.method?.toLowerCase() === 'get' || e.target.dataset.noLoading !== undefined) return;
+            setFormLoading(e.target);
+        });
+        // Balikin tombol kalau user pencet Back (bfcache)
+        window.addEventListener('pageshow', function () {
+            document.querySelectorAll('.btn.is-loading').forEach(function (btn) {
+                btn.classList.remove('is-loading');
+                btn.removeAttribute('aria-busy');
+                if (btn.dataset.originalHtml) btn.innerHTML = btn.dataset.originalHtml;
+            });
+        });
+
+        // Semua modal (id="modal-...") bisa ditutup pakai Esc atau klik area gelap di luar
+        document.addEventListener('keydown', function (e) {
+            if (e.key !== 'Escape') return;
+            document.querySelectorAll('[id^="modal-"]').forEach(function (m) {
+                if (m.style.display === 'flex') m.style.display = 'none';
+            });
+        });
+        document.addEventListener('click', function (e) {
+            if (e.target.id && e.target.id.startsWith('modal-') && e.target.style.display === 'flex') {
+                e.target.style.display = 'none';
+            }
+        });
 
         // Global SweetAlert2 Confirmation Dialog Helper
         function confirmSwal(formElement, options = {}) {
@@ -731,49 +951,26 @@
                 focusCancel: true
             }).then((result) => {
                 if (result.isConfirmed) {
+                    setFormLoading(formElement);
                     formElement.submit();
                 }
             });
             return false;
         }
 
-        // SweetAlert2 Flash Message Handlers
+        // Flash message: sebelumnya tiap pesan tampil DUA kali (alert di halaman + popup SweetAlert).
+        // Sekarang: sukses = toast kecil yang hilang sendiri, error tetap jadi alert di halaman (gak ada popup dobel).
         document.addEventListener('DOMContentLoaded', function() {
             @if(session('success'))
+                document.querySelectorAll('.main-container > .alert-success').forEach(function (el) { el.remove(); });
                 Swal.fire({
+                    toast: true,
+                    position: window.innerWidth <= 868 ? 'top' : 'top-end',
                     icon: 'success',
-                    title: 'Berhasil!',
-                    text: "{{ session('success') }}",
-                    confirmButtonColor: '#2563EB',
-                    confirmButtonText: 'OK',
-                    timer: 3500,
+                    title: @json(session('success')),
+                    showConfirmButton: false,
+                    timer: 4000,
                     timerProgressBar: true
-                });
-            @endif
-
-            @if(session('error'))
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Perhatian',
-                    text: "{{ session('error') }}",
-                    confirmButtonColor: '#2563EB',
-                    confirmButtonText: 'Mengerti'
-                });
-            @endif
-
-            @if(isset($errors) && $errors->any())
-                let errorHtml = '<div style="text-align: left; padding: 4px 8px;"><ul style="margin: 0; padding-left: 20px; font-size: 0.85rem; color: #E11D48; line-height: 1.6;">';
-                @foreach ($errors->all() as $err)
-                    errorHtml += '<li>{{ $err }}</li>';
-                @endforeach
-                errorHtml += '</ul></div>';
-
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Mohon Periksa Data Anda',
-                    html: errorHtml,
-                    confirmButtonColor: '#2563EB',
-                    confirmButtonText: 'Perbaiki'
                 });
             @endif
         });

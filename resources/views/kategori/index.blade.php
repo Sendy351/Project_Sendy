@@ -43,20 +43,20 @@
             </p>
 
             <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 1rem; border-top: 1px solid var(--border);">
-                <a href="{{ route('jasa.index', ['kategori_id' => $item->id]) }}" style="color: var(--primary); font-size: 0.85rem; font-weight: 700; text-decoration: none;">
+                <a href="{{ route('jasa.index', ['kategori_id' => $item->id]) }}" style="color: var(--primary); font-size: 0.85rem; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; min-height: 44px;">
                     Buka Katalog &rarr;
                 </a>
 
                 @auth
                     @if(Auth::user()->isAdmin())
                         <div style="display: flex; gap: 6px;">
-                            <button onclick="openEditModal({{ $item->id }}, '{{ addslashes($item->nama) }}', '{{ addslashes($item->deskripsi) }}', '{{ $item->ikon }}')" class="btn btn-outline btn-sm">
+                            <button type="button" aria-label="Edit kategori" onclick="openEditModal({{ $item->id }}, '{{ addslashes($item->nama) }}', '{{ addslashes($item->deskripsi) }}', '{{ $item->ikon }}')" class="btn btn-outline btn-sm">
                                 <i class="fa-solid fa-pen"></i>
                             </button>
                             <form action="{{ route('kategori.destroy', $item->id) }}" method="POST" onsubmit="return confirmSwal(this, { title: 'Hapus Kategori Jasa?', text: 'Kategori ini akan dihapus secara permanen.', icon: 'warning', confirmButtonText: 'Ya, Hapus', confirmButtonColor: '#E11D48' });" style="display: inline;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-outline btn-sm" style="color: var(--rose); border-color: #FECDD3;">
+                                <button type="submit" class="btn btn-outline btn-sm" aria-label="Hapus kategori" style="color: var(--rose); border-color: #FECDD3;">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
                             </form>
@@ -77,26 +77,26 @@
     <div style="background: #FFFFFF; border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 460px; padding: 2rem; box-shadow: var(--shadow-lg);">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
             <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-main);">Tambah Kategori Jasa</h3>
-            <button onclick="document.getElementById('modal-tambah-kategori').style.display='none'" style="background: none; border: none; color: var(--text-muted); font-size: 1.3rem; cursor: pointer;">&times;</button>
+            <button onclick="document.getElementById('modal-tambah-kategori').style.display='none'" class="modal-close" aria-label="Tutup">&times;</button>
         </div>
 
         <form action="{{ route('kategori.store') }}" method="POST">
             @csrf
             <div style="margin-bottom: 1.25rem;">
                 <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">Nama Kategori</label>
-                <input type="text" name="nama" required placeholder="Contoh: Print & Jilid Skripsi"
+                <input type="text" name="nama" aria-label="Nama" required placeholder="Contoh: Print & Jilid Skripsi"
                     style="width: 100%; padding: 0.75rem; background: #FFFFFF; border: 1px solid var(--border); border-radius: 8px; color: var(--text-main); font-size: 0.9rem; outline: none;">
             </div>
 
             <div style="margin-bottom: 1.25rem;">
                 <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">Ikon FontAwesome (Class)</label>
-                <input type="text" name="ikon" value="print" placeholder="print / motorcycle / laptop-code / chart-pie"
+                <input type="text" name="ikon" aria-label="Ikon" value="print" placeholder="print / motorcycle / laptop-code / chart-pie"
                     style="width: 100%; padding: 0.75rem; background: #FFFFFF; border: 1px solid var(--border); border-radius: 8px; color: var(--text-main); font-size: 0.9rem; outline: none;">
             </div>
 
             <div style="margin-bottom: 1.5rem;">
                 <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">Deskripsi Singkat</label>
-                <textarea name="deskripsi" rows="3" placeholder="Uraikan cakupan jenis jasa kampus ini..."
+                <textarea name="deskripsi" aria-label="Deskripsi" rows="3" placeholder="Uraikan cakupan jenis jasa kampus ini..."
                     style="width: 100%; padding: 0.75rem; background: #FFFFFF; border: 1px solid var(--border); border-radius: 8px; color: var(--text-main); font-size: 0.9rem; outline: none;"></textarea>
             </div>
 
@@ -113,7 +113,7 @@
     <div style="background: #FFFFFF; border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 460px; padding: 2rem; box-shadow: var(--shadow-lg);">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
             <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-main);">Edit Kategori Jasa</h3>
-            <button onclick="document.getElementById('modal-edit-kategori').style.display='none'" style="background: none; border: none; color: var(--text-muted); font-size: 1.3rem; cursor: pointer;">&times;</button>
+            <button onclick="document.getElementById('modal-edit-kategori').style.display='none'" class="modal-close" aria-label="Tutup">&times;</button>
         </div>
 
         <form id="form-edit-kategori" method="POST">

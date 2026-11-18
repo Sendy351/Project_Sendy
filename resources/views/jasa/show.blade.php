@@ -49,8 +49,8 @@
 
 @section('content')
 <div style="margin-bottom: 1.25rem;">
-    <a href="{{ route('jasa.index') }}" style="color: var(--text-muted); text-decoration: none; font-size: 0.875rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
-        <i class="fa-solid fa-arrow-left"></i> Kembali ke Katalog Layanan
+    <a href="{{ route('jasa.index') }}" class="back-link">
+            <i class="fa-solid fa-arrow-left"></i> Kembali ke Katalog Layanan
     </a>
 </div>
 
@@ -198,7 +198,7 @@
                         <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px;">
                             Titik Lokasi (Gedung/Fakultas/Kost)
                         </label>
-                        <textarea name="lokasi" required rows="2" 
+                        <textarea name="lokasi" aria-label="Lokasi" required rows="2" 
                             style="width: 100%; padding: 0.65rem; background: #FFFFFF; border: 1px solid var(--border); border-radius: 8px; color: var(--text-main); font-size: 0.825rem; outline: none;"
                             placeholder="Contoh: Gedung B Lt. 2 Ruang 204 atau Kost Asri Blok B...">{{ Auth::user()->alamat }}</textarea>
                     </div>
@@ -207,7 +207,7 @@
                         <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px;">
                             Waktu Kedatangan / Penjemputan
                         </label>
-                        <input type="datetime-local" name="jadwal" required 
+                        <input type="datetime-local" name="jadwal" aria-label="Jadwal" required 
                             value="{{ now()->addHours(2)->format('Y-m-d\TH:i') }}"
                             style="width: 100%; padding: 0.65rem; background: #FFFFFF; border: 1px solid var(--border); border-radius: 8px; color: var(--text-main); font-size: 0.825rem; outline: none;">
                     </div>
@@ -216,7 +216,7 @@
                         <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px;">
                             Rincian / Catatan Tambahan
                         </label>
-                        <textarea name="deskripsi" rows="2" 
+                        <textarea name="deskripsi" aria-label="Deskripsi" rows="2" 
                             style="width: 100%; padding: 0.65rem; background: #FFFFFF; border: 1px solid var(--border); border-radius: 8px; color: var(--text-main); font-size: 0.825rem; outline: none;"
                             placeholder="Contoh: Dokumen sudah siap cetak, jilid warna biru..."></textarea>
                     </div>

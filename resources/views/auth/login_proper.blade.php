@@ -3,8 +3,8 @@
 @section('title', 'Masuk ke Akun - JasaKita')
 
 @section('content')
-<div style="max-width: 440px; margin: 2rem auto;">
-    <div class="card" style="padding: 2.25rem; background: #FFFFFF; border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow-md);">
+<div class="auth-wrap" style="max-width: 440px; margin: 2rem auto;">
+    <div class="card auth-card" style="padding: 2.25rem; background: #FFFFFF; border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow-md);">
         
         <div style="text-align: center; margin-bottom: 2rem;">
             <div style="width: 48px; height: 48px; background: var(--primary-light); color: var(--primary); border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 0.75rem;">
@@ -18,12 +18,12 @@
             @csrf
             
             <div style="margin-bottom: 1.25rem;">
-                <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">
+                <label for="login-email" style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">
                     Alamat Email
                 </label>
                 <div style="position: relative;">
                     <i class="fa-regular fa-envelope" style="position: absolute; left: 14px; top: 13px; color: var(--text-muted);"></i>
-                    <input type="email" name="email" value="{{ old('email') }}" required 
+                    <input type="email" id="login-email" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus 
                         style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.6rem; background: #FFFFFF; border: 1px solid var(--border); border-radius: 10px; color: var(--text-main); font-size: 0.9rem; outline: none; transition: border-color 0.2s;"
                         onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'"
                         placeholder="nama@mahasiswa.ac.id">
@@ -31,20 +31,23 @@
             </div>
 
             <div style="margin-bottom: 1.25rem;">
-                <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">
+                <label for="login-sandi" style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">
                     Kata Sandi
                 </label>
                 <div style="position: relative;">
                     <i class="fa-solid fa-key" style="position: absolute; left: 14px; top: 13px; color: var(--text-muted);"></i>
-                    <input type="password" name="kata_sandi" required 
+                    <input type="password" id="login-sandi" name="kata_sandi" required autocomplete="current-password" 
                         style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.6rem; background: #FFFFFF; border: 1px solid var(--border); border-radius: 10px; color: var(--text-main); font-size: 0.9rem; outline: none; transition: border-color 0.2s;"
                         onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'"
                         placeholder="••••••••">
+                    <button type="button" onclick="togglePwd('login-sandi', this)" aria-label="Tampilkan kata sandi" style="position: absolute; right: 4px; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border: none; background: none; color: var(--text-muted); cursor: pointer;">
+                        <i class="fa-regular fa-eye"></i>
+                    </button>
                 </div>
             </div>
 
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; font-size: 0.85rem;">
-                <label style="display: flex; align-items: center; gap: 8px; color: var(--text-secondary); cursor: pointer;">
+                <label style="display: flex; align-items: center; gap: 8px; color: var(--text-secondary); cursor: pointer; min-height: 44px;">
                     <input type="checkbox" name="remember" checked style="accent-color: var(--primary);"> Ingat sesi saya
                 </label>
             </div>
@@ -59,4 +62,25 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('styles')
+<style>
+    @media (max-width: 540px) {
+        .auth-wrap { margin: 0.5rem auto !important; }
+        .auth-card { padding: 1.5rem 1.15rem !important; }
+    }
+</style>
+@endsection
+
+@section('scripts')
+<script>
+    function togglePwd(id, btn) {
+        const el = document.getElementById(id);
+        const show = el.type === 'password';
+        el.type = show ? 'text' : 'password';
+        btn.innerHTML = show ? '<i class="fa-regular fa-eye-slash"></i>' : '<i class="fa-regular fa-eye"></i>';
+        btn.setAttribute('aria-label', show ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi');
+    }
+</script>
 @endsection
